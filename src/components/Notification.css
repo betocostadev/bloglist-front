@@ -1,0 +1,49 @@
+.error-message {
+  position: absolute;
+  border-radius: 0.5rem;
+  min-width: 25vw;
+  left: 30vw;
+  background: rgb(214, 100, 100);
+  color: whitesmoke;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+  padding: 0.75rem;
+  margin: 0.75rem 0;
+  list-style: none;
+  box-shadow: 1px 2px 3px 1px rgba(172, 3, 3, 0.356);
+  animation: showhide 5s ease-out;
+}
+
+.success-message {
+  position: absolute;
+  border-radius: 0.5rem;
+  min-width: 25vw;
+  left: 30vw;
+  background: rgb(102, 214, 87);
+  color: whitesmoke;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+  padding: 0.75rem;
+  margin: 0.75rem 0;
+  list-style: none;
+  box-shadow: 1px 2px 3px 1px rgba(29, 112, 23, 0.328);
+  animation: showhide 5s ease-out;
+  overflow: hidden;
+}
+
+@keyframes showhide {
+  0% {
+    top: -100px;
+  }
+  15% {
+    top: 20px;
+  }
+  85% {
+    top: 20px
+  }
+  100% {
+    top: -100px;
+  }
+}
