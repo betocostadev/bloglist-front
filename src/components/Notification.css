@@ -12,7 +12,7 @@
   margin: 0.75rem 0;
   list-style: none;
   box-shadow: 1px 2px 3px 1px rgba(172, 3, 3, 0.356);
-  animation: showhide 5s ease-out;
+  animation: showhide 4s ease-out;
 }
 
 .success-message {
@@ -29,7 +29,7 @@
   margin: 0.75rem 0;
   list-style: none;
   box-shadow: 1px 2px 3px 1px rgba(29, 112, 23, 0.328);
-  animation: showhide 5s ease-out;
+  animation: showhide 4s ease-out;
   overflow: hidden;
 }
 

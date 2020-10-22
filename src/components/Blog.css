@@ -1,0 +1,40 @@
+.blog {
+  margin: 0 0.25rem;
+  padding: 0.25rem;
+  border: 1px solid rgb(36, 4, 4);
+}
+
+.blog-item {
+  margin: 0.1rem;
+}
+
+.remove-confirmation {
+  background: rgba(0, 0, 0, 0.801);
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+}
+
+.remove-confirmation-dialog {
+  background: white;
+  border-radius: 2rem;
+  font-size: 1.5rem;
+  padding: 2rem;
+}
+
+.remove-confirmation-dialog > div {
+  display: flex;
+  justify-content: center;
+}
+
+.remove-confirmation-dialog button {
+  padding: 0.4rem;
+  font-size: 1.1rem;
+  margin: 0.2rem;
+}
