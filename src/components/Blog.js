@@ -51,8 +51,8 @@ const Blog = ({ blog, addLike, remove, user }) => {
             <p className='blog-item'>{blog.title} {blog.author}
               <button style={buttonStyle} onClick={() => setShowDetails(!showDetails)}>Hide</button>
             </p>
-            <p className='blog-item'>{blog.url}</p>
-            <p className='blog-item'>
+            <p className='blog-item' id="url">{blog.url}</p>
+            <p className='blog-item' id="likes">
             likes {blog.likes} <button onClick={addLike}>like</button>
             </p>
             <p className='blog-item'>{blog.user && blog.user.name ? blog.user.name : 'anonymous'}</p>
