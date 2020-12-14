@@ -8,11 +8,17 @@ import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 
+import { useDispatch } from 'react-redux'
+import { notificationToggle } from './reducers/notificationReducer'
+
+
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [notification, setNotification] = useState(null)
   const [notificationType, setNotificationType] = useState(null)
+
+  const dispatch = useDispatch()
 
 
   useEffect(() => {
@@ -76,8 +82,9 @@ const App = () => {
     try {
       let newBlog = await blogService.create(blogObject)
       setBlogs(blogs.concat(newBlog))
-      setNotification(`A new blog ${newBlog.title} by ${newBlog.author} added`)
-      setNotificationType('success')
+      dispatch(notificationToggle(`A new blog ${newBlog.title} by ${newBlog.author} added`, 'success', 3.8))
+      // setNotification(`A new blog ${newBlog.title} by ${newBlog.author} added`)
+      // setNotificationType('success')
       blogFormRef.current.toggleVisibility()
       clearNotification()
 
@@ -136,11 +143,7 @@ const App = () => {
 
   return (
     <div>
-      {
-        notificationType === null
-          ? null
-          : <Notification message={notification} type={notificationType} />
-      }
+      <Notification />
       {
         user === null
           ?
