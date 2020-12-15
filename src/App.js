@@ -7,16 +7,16 @@ import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
+import Bloglist from './components/BlogList'
 
 import { useDispatch } from 'react-redux'
+import  { initializeBlogs } from './reducers/blogsReducer'
 import { notificationToggle } from './reducers/notificationReducer'
 
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const [notification, setNotification] = useState(null)
-  const [notificationType, setNotificationType] = useState(null)
 
   const dispatch = useDispatch()
 
@@ -32,6 +32,10 @@ const App = () => {
   }, [])
 
   useEffect(() => {
+    dispatch(initializeBlogs())
+  }, [dispatch])
+
+  useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
@@ -40,37 +44,22 @@ const App = () => {
     }
   }, [])
 
-  const clearNotification = () => {
-    setTimeout(() => {
-      setNotification(null)
-      setNotificationType(null)
-    }, 4000)
-  }
-
   const handleLogin = async ({ username, password }) => {
     try {
       const user = await loginService.login({ username, password })
       window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
       blogService.setToken(user.token)
       setUser(user)
-      setNotificationType('success')
-      setNotification(`Welcome ${user.username}`)
-      clearNotification()
-
+      dispatch(notificationToggle(`Welcome ${user.username}`, 'success', 3.8))
     } catch (error) {
       console.log(error)
-      setNotificationType('error')
-      setNotification('Error: Wrong or password incorrect')
-      clearNotification()
+      dispatch(notificationToggle('Error: Wrong username or password', 'error', 3.8))
     }
   }
 
   const handleLogout = () => {
-    setNotificationType('success')
-    setNotification(`Bye bye ${user.username}`)
+    dispatch(notificationToggle(`Bye bye ${user.username}`, 'success', 3.8))
     setUser(null)
-
-    clearNotification()
 
     const storedUser = window.localStorage.getItem('loggedBlogAppUser')
     if (storedUser) {
@@ -83,16 +72,10 @@ const App = () => {
       let newBlog = await blogService.create(blogObject)
       setBlogs(blogs.concat(newBlog))
       dispatch(notificationToggle(`A new blog ${newBlog.title} by ${newBlog.author} added`, 'success', 3.8))
-      // setNotification(`A new blog ${newBlog.title} by ${newBlog.author} added`)
-      // setNotificationType('success')
       blogFormRef.current.toggleVisibility()
-      clearNotification()
-
     } catch (error) {
       console.log(error)
-      setNotification('Error adding a new blog')
-      setNotificationType('error')
-      clearNotification()
+      dispatch(notificationToggle(`Error adding a new blog`, 'error', 3.8))
     }
   }
 
@@ -127,15 +110,11 @@ const App = () => {
           return b.likes - a.likes
         })
       setBlogs(updatedBlogs)
-      setNotification('Blog removed')
-      setNotificationType('success')
-      clearNotification()
+      dispatch(notificationToggle(`Blog removed`, 'success', 3.8))
 
     } catch (error) {
       console.log(error)
-      setNotification(`Error removing ${blog.title}`)
-      setNotificationType('error')
-      clearNotification()
+      dispatch(notificationToggle(`Error removing ${blog.title}`, 'error', 3.8))
     }
   }
 
@@ -162,7 +141,12 @@ const App = () => {
             { blogs.map(blog =>
               <Blog key={blog.id} blog={blog} addLike={() => addLike(blog.id)} remove={() => removeBlog(blog.id)} user={user} />
             )}
+
+            <h3>The other bloglist</h3>
+            <Bloglist removeBlog={removeBlog} addLike={addLike} user={user} />
           </div>
+
+
       }
     </div>
   )
