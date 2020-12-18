@@ -4,11 +4,10 @@ import BlogForm from './BlogForm'
 import Togglable from './Togglable'
 
 import { useDispatch, useSelector } from 'react-redux'
-// import { addVote } from '../reducers/anecdoteReducer'
 import { notificationToggle } from '../reducers/notificationReducer'
-import { createBlog, addLike } from '../reducers/blogsReducer'
+import { createBlog, addLike, removeBlog } from '../reducers/blogsReducer'
 
-const BlogList = ({ user, removeBlog, handleLogout }) => {
+const BlogList = ({ user, handleLogout }) => {
   const dispatch = useDispatch()
   const blogs = useSelector(state => state.blogs)
   const blogFormRef = useRef()
@@ -35,6 +34,16 @@ const BlogList = ({ user, removeBlog, handleLogout }) => {
     }
   }
 
+  const remove = id => {
+    const blog = blogs.find(b => b.id === id)
+    try {
+      dispatch(removeBlog(blog))
+      blogs.sort((a, b) => b.likes - a.likes)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
 
   return (
     <div>
@@ -45,7 +54,7 @@ const BlogList = ({ user, removeBlog, handleLogout }) => {
       </Togglable>
 
       { blogs.sort((a, b) => b.likes - a.likes).map(blog =>
-        <Blog key={blog.id} blog={blog} like={() => like(blog.id)} remove={() => removeBlog(blog.id)} user={user} />
+        <Blog key={blog.id} blog={blog} like={() => like(blog.id)} remove={() => remove(blog.id)} user={user} />
       )}
     </div>
   )

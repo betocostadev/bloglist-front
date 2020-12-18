@@ -16,14 +16,6 @@ const App = () => {
 
   const dispatch = useDispatch()
 
-
-  useEffect(() => {
-    blogService.getAll().then(blogs => {
-      blogs.sort((a, b) => b.likes - a.likes)
-      setBlogs( blogs )
-    })
-  }, [])
-
   useEffect(() => {
     dispatch(initializeBlogs())
   }, [dispatch])
@@ -60,25 +52,6 @@ const App = () => {
     }
   }
 
-  const removeBlog = async (id) => {
-    const blog = blogs.find(b => b.id === id)
-    try {
-      let deletedBlog = await blogService.remove(id)
-      console.log('deleted blog', deletedBlog)
-      let updatedBlogs = blogs
-        .filter(blog => blog.id !== id)
-        .sort((a, b) => {
-          return b.likes - a.likes
-        })
-      setBlogs(updatedBlogs)
-      dispatch(notificationToggle(`Blog removed`, 'success', 3.8))
-
-    } catch (error) {
-      console.log(error)
-      dispatch(notificationToggle(`Error removing ${blog.title}`, 'error', 3.8))
-    }
-  }
-
   return (
     <div>
       <Notification />
@@ -91,7 +64,7 @@ const App = () => {
           </div>
           :
           <div>
-            <Bloglist handleLogout={handleLogout} removeBlog={removeBlog} user={user} />
+            <Bloglist handleLogout={handleLogout} user={user} />
           </div>
       }
     </div>
