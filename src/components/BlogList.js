@@ -6,23 +6,46 @@ import Togglable from './Togglable'
 import { useDispatch, useSelector } from 'react-redux'
 // import { addVote } from '../reducers/anecdoteReducer'
 import { notificationToggle } from '../reducers/notificationReducer'
+import { createBlog, addLike } from '../reducers/blogsReducer'
 
-const BlogList = ({ user, createBlog, removeBlog, addLike, handleLogout }) => {
+const BlogList = ({ user, removeBlog, handleLogout }) => {
   const dispatch = useDispatch()
   const blogs = useSelector(state => state.blogs)
-
   const blogFormRef = useRef()
+
+  const create = (blogObject) => {
+    try {
+      dispatch(createBlog(blogObject))
+      dispatch(notificationToggle(`A new blog ${blogObject.title} by ${blogObject.author} added`, 'success', 3.8))
+      blogFormRef.current.toggleVisibility()
+    } catch (error) {
+      console.log(error)
+      dispatch(notificationToggle(`Error adding a new blog`, 'error', 3.8))
+    }
+  }
+
+  const like = id => {
+    const blog = blogs.find(b => b.id === id)
+    const likedBlog = { ...blog, likes: blog.likes + 1 }
+    try {
+      dispatch(addLike(likedBlog))
+      blogs.sort((a, b) => b.likes - a.likes)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
 
   return (
     <div>
       <h2>blogs</h2>
       <p>{user.name} logged in <button onClick={handleLogout}>Logout</button></p>
       <Togglable buttonLabel="new-blog" ref={blogFormRef}>
-        <BlogForm createBlog={createBlog} />
+        <BlogForm createBlog={create} />
       </Togglable>
 
       { blogs.sort((a, b) => b.likes - a.likes).map(blog =>
-        <Blog key={blog.id} blog={blog} addLike={() => addLike(blog.id)} remove={() => removeBlog(blog.id)} user={user} />
+        <Blog key={blog.id} blog={blog} like={() => like(blog.id)} remove={() => removeBlog(blog.id)} user={user} />
       )}
     </div>
   )

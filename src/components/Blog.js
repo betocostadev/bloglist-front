@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import './Blog.css'
 
-const Blog = ({ blog, addLike, remove, user }) => {
+const Blog = ({ blog, like, remove, user }) => {
   const [showDetails, setShowDetails] = useState(false)
   const [confirmRemove, setConfirmRemove] = useState(false)
 
@@ -53,7 +53,7 @@ const Blog = ({ blog, addLike, remove, user }) => {
             </p>
             <p className='blog-item' id="url">{blog.url}</p>
             <p className='blog-item' id="likes">
-            likes {blog.likes} <button onClick={addLike}>like</button>
+            likes {blog.likes} <button onClick={like}>like</button>
             </p>
             <p className='blog-item'>{blog.user && blog.user.name ? blog.user.name : 'anonymous'}</p>
             {
