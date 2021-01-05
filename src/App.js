@@ -1,73 +1,68 @@
-import React, { useState, useEffect } from 'react'
-import blogService from './services/blogs'
-import loginService from './services/login'
+import React, { useEffect } from 'react'
+import {
+  BrowserRouter as Router,
+  Switch, Route, Link
+} from "react-router-dom"
 
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import Bloglist from './components/BlogList'
 
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import  { initializeBlogs } from './reducers/blogsReducer'
-import { notificationToggle } from './reducers/notificationReducer'
+import { loginUser, logoutUser, setUser } from './reducers/userReducer'
 
+
+const Users = () => (
+  <div> <h2>Users</h2> </div>
+)
 
 const App = () => {
-  const [user, setUser] = useState(null)
+  const user = useSelector(state => state.user)
 
   const dispatch = useDispatch()
 
   useEffect(() => {
+    dispatch(setUser())
     dispatch(initializeBlogs())
   }, [dispatch])
 
-  useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
-    }
-  }, [])
-
   const handleLogin = async ({ username, password }) => {
-    try {
-      const user = await loginService.login({ username, password })
-      window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
-      blogService.setToken(user.token)
-      setUser(user)
-      dispatch(notificationToggle(`Welcome ${user.username}`, 'success', 3.8))
-    } catch (error) {
-      console.log(error)
-      dispatch(notificationToggle('Error: Wrong username or password', 'error', 3.8))
-    }
+    dispatch(loginUser({ username, password }))
   }
 
   const handleLogout = () => {
-    dispatch(notificationToggle(`Bye bye ${user.username}`, 'success', 3.8))
-    setUser(null)
-
-    const storedUser = window.localStorage.getItem('loggedBlogAppUser')
-    if (storedUser) {
-      window.localStorage.removeItem('loggedBlogAppUser')
-    }
+    dispatch(logoutUser(user))
   }
 
   return (
-    <div>
+    <Router>
       <Notification />
-      {
-        user === null
-          ?
-          <div>
-            <h3>Log into application</h3>
-            <LoginForm loginHandler={handleLogin} />
-          </div>
-          :
-          <div>
-            <Bloglist handleLogout={handleLogout} user={user} />
-          </div>
-      }
-    </div>
+      <div>
+        <Link style={{padding: '5px'}} to="/">home</Link>
+        <Link style={{padding: '5px'}} to="/users">users</Link>
+      </div>
+
+      <Switch>
+        <Route path="/users">
+          <Users />
+        </Route>
+        <Route path="/">
+          {
+            user === null
+              ?
+              <div>
+                <h3>Log into application</h3>
+                <LoginForm loginHandler={handleLogin} />
+              </div>
+              :
+              <div>
+                <Bloglist handleLogout={handleLogout} />
+              </div>
+          }
+        </Route>
+      </Switch>
+    </Router>
   )
 }
 

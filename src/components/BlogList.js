@@ -7,14 +7,15 @@ import { useDispatch, useSelector } from 'react-redux'
 import { notificationToggle } from '../reducers/notificationReducer'
 import { createBlog, addLike, removeBlog } from '../reducers/blogsReducer'
 
-const BlogList = ({ user, handleLogout }) => {
+const BlogList = ({ handleLogout }) => {
   const dispatch = useDispatch()
   const blogs = useSelector(state => state.blogs)
+  const user = useSelector(state => state.user)
   const blogFormRef = useRef()
 
   const create = (blogObject) => {
     try {
-      dispatch(createBlog(blogObject))
+      dispatch(createBlog(blogObject, user))
       dispatch(notificationToggle(`A new blog ${blogObject.title} by ${blogObject.author} added`, 'success', 3.8))
       blogFormRef.current.toggleVisibility()
     } catch (error) {

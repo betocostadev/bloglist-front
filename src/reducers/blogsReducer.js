@@ -44,9 +44,10 @@ export const removeBlog = blog => {
   }
 }
 
-export const createBlog = content => {
+export const createBlog = (content, user) => {
   return async dispatch => {
     const newBlog = await blogsService.create(content)
+    newBlog.user = user
     dispatch({ type: 'ADD_BLOG', data: newBlog })
   }
 }

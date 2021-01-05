@@ -42,7 +42,7 @@ const Blog = ({ blog, like, remove, user }) => {
         !showDetails
           ?
           <div className='blog'>
-            <p className='blog-item'>{blog.title} {blog.author}
+            <p className='blog-item'>{blog.title} by {blog.author}
               <button style={buttonStyle} onClick={() => setShowDetails(!showDetails)}>Show</button>
             </p>
           </div>
