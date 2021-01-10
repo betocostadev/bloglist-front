@@ -7,15 +7,12 @@ import {
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import Bloglist from './components/BlogList'
+import Users from './components/Users'
 
 import { useDispatch, useSelector } from 'react-redux'
 import  { initializeBlogs } from './reducers/blogsReducer'
 import { loginUser, logoutUser, setUser } from './reducers/userReducer'
 
-
-const Users = () => (
-  <div> <h2>Users</h2> </div>
-)
 
 const App = () => {
   const user = useSelector(state => state.user)
@@ -45,7 +42,7 @@ const App = () => {
 
       <Switch>
         <Route path="/users">
-          <Users />
+          <Users user={user} handleLogin={handleLogin} handleLogout={handleLogout} />
         </Route>
         <Route path="/">
           {
