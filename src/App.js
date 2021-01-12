@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react'
 import {
   BrowserRouter as Router,
-  Switch, Route, Link
-} from "react-router-dom"
+  Switch, Route, Redirect, Link, useHistory
+} from 'react-router-dom'
 
-import LoginForm from './components/LoginForm'
+import Login from './components/Login'
 import Notification from './components/Notification'
 import Bloglist from './components/BlogList'
 import Users from './components/Users'
@@ -15,6 +15,8 @@ import { loginUser, logoutUser, setUser } from './reducers/userReducer'
 
 
 const App = () => {
+  let history = useHistory()
+
   const user = useSelector(state => state.user)
 
   const dispatch = useDispatch()
@@ -26,10 +28,16 @@ const App = () => {
 
   const handleLogin = async ({ username, password }) => {
     dispatch(loginUser({ username, password }))
+    routeHome(history)
   }
 
   const handleLogout = () => {
     dispatch(logoutUser(user))
+  }
+
+  const routeHome = (props) => {
+    console.log(props)
+    console.log(user)
   }
 
   return (
@@ -41,23 +49,19 @@ const App = () => {
       </div>
 
       <Switch>
-        <Route path="/users">
-          <Users user={user} handleLogin={handleLogin} handleLogout={handleLogout} />
+        <Route path="/users" render={() =>
+          user
+          ? <Users user={user} handleLogin={handleLogin} handleLogout={handleLogout} />
+          : <Redirect to="/login" />
+        } />
+        <Route path="/login">
+          <Login handler={handleLogin} />
         </Route>
-        <Route path="/">
-          {
-            user === null
-              ?
-              <div>
-                <h3>Log into application</h3>
-                <LoginForm loginHandler={handleLogin} />
-              </div>
-              :
-              <div>
-                <Bloglist handleLogout={handleLogout} />
-              </div>
-          }
-        </Route>
+        <Route path="/" render={() =>
+          user === null
+          ? <Redirect to="/login" />
+          : <Bloglist handleLogout={handleLogout} />
+        } />
       </Switch>
     </Router>
   )

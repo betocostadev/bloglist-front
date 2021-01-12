@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 import './Blog.css'
 
 const Blog = ({ blog, like, remove, user }) => {
@@ -42,7 +43,7 @@ const Blog = ({ blog, like, remove, user }) => {
         !showDetails
           ?
           <div className='blog'>
-            <p className='blog-item'>{blog.title} by {blog.author}
+            <p className='blog-item'><Link to={`/blogs/${blog.id}`}>{blog.title}</Link> by {blog.author}
               <button style={buttonStyle} onClick={() => setShowDetails(!showDetails)}>Show</button>
             </p>
           </div>
@@ -57,9 +58,11 @@ const Blog = ({ blog, like, remove, user }) => {
             </p>
             <p className='blog-item'>{blog.user && blog.user.name ? blog.user.name : 'anonymous'}</p>
             {
+              user && blog.user ?
               user.name === blog.user.name ?
                 <button onClick={() => setConfirmRemove(true)}>remove</button>
                 : null
+              : null
             }
           </div>
       }

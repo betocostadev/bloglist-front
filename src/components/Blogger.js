@@ -1,33 +1,29 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { initializeBlogger } from '../reducers/bloggerReducer'
-import {
-  BrowserRouter as Router,
-  Switch, Route, Link, useParams
-} from 'react-router-dom'
+import { useParams } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import { initializeUsers } from '../reducers/usersReducer'
 // import usersService from '../services/users'
 
 const Blogger = () => {
-  const [loaded, setLoaded] = useState(false)
   const id = useParams().id
-  // const getBlogger = async () => await usersService.getBlogger(id)
-  // const blogger = users ? users.find(u => u.id === id) : getBlogger()
-  const blogger = useSelector(state => state.blogger)
+  const users = useSelector(state => state.users)
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(initializeBlogger(id))
-  }, [dispatch])
+    if (users.length) {
+      return
+    } else {
+      dispatch(initializeUsers())
+    }
+  }, [dispatch, users.length])
 
-  setTimeout(() => {
-    if (blogger.blogs && blogger.blogs.length) setLoaded(true)
-  }, 500)
-
+  const blogger = users.find(u => u.id === id)
 
   return (
     <div>
       {
-        !loaded ?
+        !blogger || !blogger.blogs ?
         <div>
           <p>Loading...</p>
         </div>
@@ -37,7 +33,7 @@ const Blogger = () => {
           <h4>Added blogs</h4>
           <ul>
             {
-              blogger.blogs.map(b => <li key={b.id}>{b.title}</li>)
+              blogger.blogs.map(b => <li key={b.id}><Link to={`/blogs/${b.id}`}>{b.title}</Link></li>)
             }
           </ul>
         </div>

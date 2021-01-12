@@ -1,8 +1,13 @@
 import React, { useRef } from 'react'
 import Blog from './Blog'
 import BlogForm from './BlogForm'
+import BlogPage from './BlogPage'
 import Togglable from './Togglable'
 
+import {
+  BrowserRouter as Router,
+  Switch, Route
+} from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { notificationToggle } from '../reducers/notificationReducer'
 import { createBlog, addLike, removeBlog } from '../reducers/blogsReducer'
@@ -47,17 +52,24 @@ const BlogList = ({ handleLogout }) => {
 
 
   return (
-    <div>
-      <h2>blogs</h2>
-      <p>{user.name} logged in <button onClick={handleLogout}>Logout</button></p>
-      <Togglable buttonLabel="new-blog" ref={blogFormRef}>
-        <BlogForm createBlog={create} />
-      </Togglable>
+    <Router>
+      <Switch>
+        <Route path="/blogs/:id">
+          <BlogPage user={user} like={like} remove={remove} />
+        </Route>
+        <Route path="/">
+          <h2>blogs</h2>
+          <p>{user.name} logged in <button onClick={handleLogout}>Logout</button></p>
+          <Togglable buttonLabel="new-blog" ref={blogFormRef}>
+            <BlogForm createBlog={create} />
+          </Togglable>
 
-      { blogs.sort((a, b) => b.likes - a.likes).map(blog =>
-        <Blog key={blog.id} blog={blog} like={() => like(blog.id)} remove={() => remove(blog.id)} user={user} />
-      )}
-    </div>
+          { blogs.sort((a, b) => b.likes - a.likes).map(blog =>
+            <Blog key={blog.id} blog={blog} like={() => like(blog.id)} remove={() => remove(blog.id)} user={user} />
+          )}
+        </Route>
+      </Switch>
+    </Router>
   )
 }
 
