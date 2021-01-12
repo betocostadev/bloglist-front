@@ -2,9 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import  { initializeBlogs, addLike, removeBlog } from '../reducers/blogsReducer'
-import {
-  useHistory
-} from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 
 const BlogPage = ({ user }) => {
   const [confirmRemove, setConfirmRemove] = useState(false)

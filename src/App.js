@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   BrowserRouter as Router,
   Switch, Route, Redirect, Link, useHistory
@@ -15,7 +15,7 @@ import { loginUser, logoutUser, setUser } from './reducers/userReducer'
 
 
 const App = () => {
-  let history = useHistory()
+  const [loading, setLoading] = useState(true)
 
   const user = useSelector(state => state.user)
 
@@ -24,21 +24,26 @@ const App = () => {
   useEffect(() => {
     dispatch(setUser())
     dispatch(initializeBlogs())
+    setLoading(false)
   }, [dispatch])
+
+  let history = useHistory()
+  const goHome = (props) => {
+    console.log(history)
+    console.log(props)
+    history.push('/')
+  }
 
   const handleLogin = async ({ username, password }) => {
     dispatch(loginUser({ username, password }))
-    routeHome(history)
+    goHome()
   }
 
   const handleLogout = () => {
     dispatch(logoutUser(user))
   }
 
-  const routeHome = (props) => {
-    console.log(props)
-    console.log(user)
-  }
+
 
   return (
     <Router>
@@ -48,21 +53,25 @@ const App = () => {
         <Link style={{padding: '5px'}} to="/users">users</Link>
       </div>
 
-      <Switch>
-        <Route path="/users" render={() =>
-          user
-          ? <Users user={user} handleLogin={handleLogin} handleLogout={handleLogout} />
-          : <Redirect to="/login" />
-        } />
-        <Route path="/login">
-          <Login handler={handleLogin} />
-        </Route>
-        <Route path="/" render={() =>
-          user === null
-          ? <Redirect to="/login" />
-          : <Bloglist handleLogout={handleLogout} />
-        } />
-      </Switch>
+      {
+        loading ? <div>Loading...</div>
+        :
+        <Switch>
+          <Route path="/users" render={() =>
+            user
+            ? <Users user={user} handleLogin={handleLogin} handleLogout={handleLogout} />
+            : <Redirect to="/login" />
+          } />
+          <Route path="/login">
+            <Login handler={handleLogin} />
+          </Route>
+          <Route path="/" render={() =>
+            user === null
+            ? <Redirect to="/login" />
+            : <Bloglist handleLogout={handleLogout} />
+          } />
+        </Switch>
+      }
     </Router>
   )
 }
