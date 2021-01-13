@@ -1,11 +1,19 @@
 import React, { useRef } from 'react'
-import Blog from './Blog'
 import BlogForm from './BlogForm'
 import Togglable from './Togglable'
 
 import { useDispatch, useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
 import { notificationToggle } from '../reducers/notificationReducer'
-import { createBlog, addLike, removeBlog } from '../reducers/blogsReducer'
+import { createBlog } from '../reducers/blogsReducer'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Paper,
+} from '@material-ui/core'
 
 const BlogList = () => {
   const dispatch = useDispatch()
@@ -24,27 +32,6 @@ const BlogList = () => {
     }
   }
 
-  const like = id => {
-    const blog = blogs.find(b => b.id === id)
-    const likedBlog = { ...blog, likes: blog.likes + 1 }
-    try {
-      dispatch(addLike(likedBlog))
-      blogs.sort((a, b) => b.likes - a.likes)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  const remove = id => {
-    const blog = blogs.find(b => b.id === id)
-    try {
-      dispatch(removeBlog(blog))
-      blogs.sort((a, b) => b.likes - a.likes)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
 
   return (
     <div>
@@ -54,9 +41,23 @@ const BlogList = () => {
         <BlogForm createBlog={create} />
       </Togglable>
 
-      { blogs.sort((a, b) => b.likes - a.likes).map(blog =>
-        <Blog key={blog.id} blog={blog} like={() => like(blog.id)} remove={() => remove(blog.id)} user={user} />
-      )}
+      <TableContainer component={Paper}>
+        <Table>
+          <TableBody>
+          { blogs.sort((a, b) => b.likes - a.likes).map(blog =>
+            <TableRow key={blog.id}>
+              <TableCell>
+                <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+              </TableCell>
+              <TableCell>
+                {blog.author}
+              </TableCell>
+            </TableRow>
+          )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
     </div>
   )
 }

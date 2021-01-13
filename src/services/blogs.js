@@ -24,11 +24,12 @@ const addLike = async blog => {
   const config = {
     headers: { Authorization: token }
   }
-  const changedBlog = {
-    ...blog,
-    likes: blog.likes + 1
-  }
-  const response = await axios.put(`${baseUrl}/${blog.id}`, changedBlog, config)
+  // Already giving +1 to like and sending the blog here
+  // const changedBlog = {
+  //   ...blog,
+  //   likes: blog.likes + 1
+  // }
+  const response = await axios.put(`${baseUrl}/${blog.id}`, blog, config)
   return response.data
 }
 
