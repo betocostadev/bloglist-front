@@ -22,6 +22,15 @@ const blogsReducer = (state = [], action) => {
       return action.data
     }
 
+    case 'ADD_COMMENT': {
+      const id = action.id
+      const blogToComment = state.find(b => b.id === id)
+      const CommentedBlog = {
+        ...blogToComment, comments: blogToComment.comments.concat(action.data)
+      }
+      return state.map(blog => blog.id !== id ? blog : CommentedBlog)
+    }
+
     default:
       break
   }
@@ -49,6 +58,13 @@ export const createBlog = (content, user) => {
     const newBlog = await blogsService.create(content)
     newBlog.user = user
     dispatch({ type: 'ADD_BLOG', data: newBlog })
+  }
+}
+
+export const createComment = (content, blog) => {
+  return async dispatch => {
+    const newComment = await blogsService.createComment(content, blog)
+    dispatch({ type: 'ADD_COMMENT', data: newComment, id: blog.id })
   }
 }
 

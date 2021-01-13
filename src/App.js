@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from 'react'
 import {
   BrowserRouter as Router,
-  Switch, Route, Redirect, Link
+  Switch, Route, Redirect
 } from 'react-router-dom'
 
 import Login from './components/Login'
 import Notification from './components/Notification'
 import Bloglist from './components/BlogList'
 import Users from './components/Users'
+import BlogPage from './components/BlogPage'
 import Blogger from './components/Blogger'
 
 import { useDispatch, useSelector } from 'react-redux'
 import  { initializeBlogs } from './reducers/blogsReducer'
 import { logoutUser, setUser } from './reducers/userReducer'
 import { initializeUsers } from './reducers/usersReducer'
+import Navbar from './components/Navbar'
 
 
 const App = () => {
@@ -38,10 +40,7 @@ const App = () => {
   return (
     <Router>
       <Notification />
-      <div>
-        <Link style={{padding: '5px'}} to="/">home</Link>
-        <Link style={{padding: '5px'}} to="/users">users</Link>
-      </div>
+      <Navbar user={user} handleLogout={handleLogout} />
 
       {
         loading ? <div>Loading...</div>
@@ -55,7 +54,13 @@ const App = () => {
 
           <Route path="/users" render={() =>
             user
-            ? <Users user={user} handleLogout={handleLogout} />
+            ? <Users user={user} />
+            : <Redirect to="/login" />
+          } />
+
+          <Route path="/blogs/:id" render={() =>
+            user
+            ? <BlogPage user={user} />
             : <Redirect to="/login" />
           } />
 
@@ -68,7 +73,7 @@ const App = () => {
           <Route path="/" render={() =>
             user === null
             ? <Redirect to="/login" />
-            : <Bloglist handleLogout={handleLogout} />
+            : <Bloglist />
           } />
 
         </Switch>
