@@ -35,8 +35,7 @@ const BlogList = () => {
 
   return (
     <div>
-      <h2>Blog App</h2>
-      <h3>blogs</h3>
+      <h2>Blogs</h2>
       <Togglable buttonLabel="new-blog" ref={blogFormRef}>
         <BlogForm createBlog={create} />
       </Togglable>

@@ -4,6 +4,11 @@ import { useParams } from 'react-router-dom'
 import  { initializeBlogs, createComment, addLike, removeBlog } from '../reducers/blogsReducer'
 import { useHistory, Link } from 'react-router-dom'
 
+import { Input, InputLabel, InputAdornment, FormControl, Button,
+  Card, CardContent, Typography, CardActions } from '@material-ui/core'
+import InsertCommentIcon from '@material-ui/icons/InsertComment'
+import ThumbUpIcon from '@material-ui/icons/ThumbUp'
+
 const BlogPage = ({ user }) => {
   const [confirmRemove, setConfirmRemove] = useState(false)
   const [newComment, setNewComment] = useState('')
@@ -59,6 +64,12 @@ const BlogPage = ({ user }) => {
     setNewComment('')
   }
 
+  const authorLink = {
+    textDecoration: 'none',
+    color: '#3840a5',
+    fontWeight: 'bold'
+  }
+
 
   const blog = blogs.find(b => b.id === id)
   return (
@@ -68,10 +79,12 @@ const BlogPage = ({ user }) => {
         ? null
         : <div className='remove-confirmation'>
           <div className='remove-confirmation-dialog'>
-            <p>Do you really want to remove {blog.title} by {blog.author}?</p>
+          <Typography variant="body1" component="p">
+            Do you really want to remove {blog.title} by {blog.author}?
+          </Typography>
             <div>
-              <button onClick={() => setConfirmRemove(false)}>Cancel</button>
-              <button onClick={() => handleRemove(blog.id)}>Remove</button>
+              <Button variant="outlined" color="primary" onClick={() => setConfirmRemove(false)}>Cancel</Button>
+              <Button variant="outlined" color="secondary" onClick={() => handleRemove(blog.id)}>Remove</Button>
             </div>
           </div>
         </div>
@@ -79,35 +92,49 @@ const BlogPage = ({ user }) => {
     {
       blog ?
       <div>
-        <h3>Blog app</h3>
-        <h2>{blog.title} by {blog.author}</h2>
+      <Card>
+      <CardContent>
+        <Typography color="textSecondary" component="h2" gutterBottom>
+        {blog.title} by {blog.author}
+        </Typography>
+        <Typography variant="body1" component="p">
+          likes <strong>{blog.likes}</strong>
+          <Button style={{ marginLeft: '0.75rem'}} size="small" variant="text" color="primary" onClick={() => like(blog.id)}><ThumbUpIcon color="primary" fontSize="small" /></Button>
+        </Typography>
         <div>
-          <a href={blog.url} target="_blank" rel="noopener noreferrer">Read it!</a>
-          <p className='blog-item' id="likes">
-          likes {blog.likes} <button onClick={() => like(blog.id)}>like</button>
-          </p>
-          <p className='blog-item'>{blog.user && blog.user.name ? <Link to={`/users/${blog.user.id}`}>{blog.user.name}</Link> : 'anonymous'}</p>
-              {
-                user && blog.user ?
-                user.name === blog.user.name ?
-                  <button onClick={() => setConfirmRemove(true)}>remove</button>
-                  : null
-                : null
-              }
+        <Typography variant="body2" component="p">
+          { blog.user && blog.user.name ? <Link style={authorLink} to={`/users/${blog.user.id}`}>{blog.user.name}</Link> : 'anonymous' }
+        </Typography>
+        {
+          user && blog.user ?
+          user.name === blog.user.name ?
+            <Button size="small" variant="contained" color="secondary" onClick={() => setConfirmRemove(true)}>remove</Button>
+            : null
+          : null
+        }
         </div>
-
+      </CardContent>
+      <CardActions>
+        <Button component="a" href={blog.url} target="_blank" rel="noopener noreferrer">Read the blog</Button>
+      </CardActions>
+    </Card>
         <div>
           <h4>Comments</h4>
-          <form onSubmit={addComment} className="blog-form">
-            <div>
-              <label htmlFor="comment">Comment:</label>
-              <input
+          <form onSubmit={addComment}>
+            <FormControl>
+              <InputLabel htmlFor="comment">Comment</InputLabel>
+              <Input
+                id="comment"
                 name="comment"
-                value={newComment}
-                onChange={handleCommentChange}
+                required type="text" value={newComment} onChange={handleCommentChange}
+                startAdornment={
+                  <InputAdornment position="start">
+                    <InsertCommentIcon />
+                  </InputAdornment>
+                }
               />
-              <button type="submit">Add Comment</button>
-            </div>
+            </FormControl>
+            <Button style={{ verticalAlign: 'bottom' }} size="small" variant="contained" color="primary" type="submit" disabled={!newComment.length}>Add</Button>
           </form>
           { blog.comments && blog.comments.length
             ? <ul>
@@ -124,3 +151,18 @@ const BlogPage = ({ user }) => {
 }
 
 export default BlogPage
+// <h2>{blog.title} by {blog.author}</h2>
+//         <div>
+
+//           <p className='blog-item' id="likes">
+//           likes {blog.likes} <button onClick={() => like(blog.id)}>like</button>
+//           </p>
+//           <p className='blog-item'>{blog.user && blog.user.name ? <Link to={`/users/${blog.user.id}`}>{blog.user.name}</Link> : 'anonymous'}</p>
+//               {
+//                 user && blog.user ?
+//                 user.name === blog.user.name ?
+//                   <button onClick={() => setConfirmRemove(true)}>remove</button>
+//                   : null
+//                 : null
+//               }
+//         </div>

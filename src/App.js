@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import  { initializeBlogs } from './reducers/blogsReducer'
-import { logoutUser, setUser } from './reducers/userReducer'
+import { setUser } from './reducers/userReducer'
 import { initializeUsers } from './reducers/usersReducer'
 import {
   BrowserRouter as Router,
@@ -16,7 +16,7 @@ import Users from './components/Users'
 import BlogPage from './components/BlogPage'
 import Blogger from './components/Blogger'
 
-import Container from '@material-ui/core/Container'
+import { Container, CircularProgress } from '@material-ui/core'
 
 const App = () => {
   const [loading, setLoading] = useState(true)
@@ -30,21 +30,19 @@ const App = () => {
     dispatch(setUser())
     dispatch(initializeBlogs())
     dispatch(initializeUsers())
-    setLoading(false)
+    setTimeout(() => {
+      setLoading(false)
+    }, 500)
   }, [dispatch])
-
-  const handleLogout = () => {
-    dispatch(logoutUser(user))
-  }
 
   return (
     <Router>
       <Container>
         <Notification />
-        <Navbar user={user} handleLogout={handleLogout} />
+        <Navbar user={user} />
 
         {
-          loading ? <div>Loading...</div>
+          loading ? <CircularProgress style={{position: 'fixed', top: '46%', left: '46%'}} />
           :
           <Switch>
             <Route path="/users/:id" render={() =>

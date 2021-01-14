@@ -3,6 +3,16 @@ import { useDispatch, useSelector } from 'react-redux'
 import { initializeUsers } from '../reducers/usersReducer'
 import { Link } from 'react-router-dom'
 
+import {
+  Table,
+  TableHead,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Paper,
+} from '@material-ui/core'
+
 const Users = () => {
   const users = useSelector(state => state.users)
   const dispatch = useDispatch()
@@ -14,22 +24,29 @@ const Users = () => {
   return (
     <div>
       <div>
-        <h2>Blog App</h2>
-        <h3>Users</h3>
-        <table>
-          <tbody>
-          <tr>
-          <th></th>
-          <th>Blogs created</th>
-          </tr>
+        <h2>Blog app users</h2>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>User</TableCell>
+                <TableCell>Blogs</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
             { users.map(usr =>
-              <tr key={usr.id}>
-                <td><Link style={{padding: '5px'}} to={`/users/${usr.id}`}>{usr.name}</Link></td>
-                <td>{usr.blogs.length}</td>
-              </tr>
+              <TableRow key={usr.id}>
+                <TableCell>
+                  <Link to={`/users/${usr.id}`}>{usr.name}</Link>
+                </TableCell>
+                <TableCell>
+                  {usr.blogs.length}
+                </TableCell>
+              </TableRow>
             )}
-          </tbody>
-        </table>
+            </TableBody>
+          </Table>
+        </TableContainer>
       </div>
     </div>
   )

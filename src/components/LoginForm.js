@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
+import { Input, InputLabel, InputAdornment, FormControl, Button} from '@material-ui/core'
+import AccountCircle from '@material-ui/icons/AccountCircle'
 import './LoginForm.css'
 
 const LoginForm = ({ loginHandler }) => {
@@ -18,30 +20,34 @@ const LoginForm = ({ loginHandler }) => {
   }
 
   return (
-    <form className="login-form" onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="username-input">Username:</label>
-        <input
-          className="login-input"
+    <form className="login-form" noValidate autoComplete="off" onSubmit={handleSubmit}>
+      <FormControl>
+        <InputLabel htmlFor="username-input">Username</InputLabel>
+        <Input
           id="username-input"
-          type="text"
-          value={username}
           name="username-input"
-          onChange={handleChange}
+          required type="text" value={username} onChange={handleChange}
+          startAdornment={
+            <InputAdornment position="start">
+              <AccountCircle />
+            </InputAdornment>
+          }
         />
-      </div>
-      <div>
-        <label htmlFor="password-input">Password:</label>
-        <input
-          className="login-input"
+      </FormControl>
+      <FormControl>
+        <InputLabel htmlFor="password-input">Password</InputLabel>
+        <Input
           id="password-input"
-          type="password"
-          value={password}
           name="password-input"
-          onChange={handleChange}
+          required type="password" value={password} onChange={handleChange}
+          startAdornment={
+            <InputAdornment position="start">
+              <AccountCircle />
+            </InputAdornment>
+          }
         />
-      </div>
-      <button type="submit" disabled={!username.length || !password.length}>login</button>
+      </FormControl>
+      <Button variant="contained" color="primary" type="submit" disabled={!username.length || !password.length}>login</Button>
     </form>
   )
 }

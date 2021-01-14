@@ -4,6 +4,16 @@ import { useParams } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { initializeUsers } from '../reducers/usersReducer'
 // import usersService from '../services/users'
+import {
+  CircularProgress,
+  Table,
+  TableHead,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Paper,
+} from '@material-ui/core'
 
 const Blogger = () => {
   const id = useParams().id
@@ -24,18 +34,29 @@ const Blogger = () => {
     <div>
       {
         !blogger || !blogger.blogs ?
-        <div>
-          <p>Loading...</p>
-        </div>
+        <CircularProgress style={{position: 'fixed', top: '46%', left: '46%'}} />
         :
+
         <div>
           <h2>{blogger.name}</h2>
-          <h4>Added blogs</h4>
-          <ul>
-            {
-              blogger.blogs.map(b => <li key={b.id}><Link to={`/blogs/${b.id}`}>{b.title}</Link></li>)
-            }
-          </ul>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Added blogs</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+              { blogger.blogs.map(b =>
+                <TableRow key={b.id}>
+                  <TableCell>
+                    <Link to={`/blogs/${b.id}`}>{b.title}</Link>
+                  </TableCell>
+                </TableRow>
+              )}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </div>
       }
     </div>
