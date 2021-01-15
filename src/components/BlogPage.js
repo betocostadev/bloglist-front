@@ -115,7 +115,7 @@ const BlogPage = ({ user }) => {
         </div>
       </CardContent>
       <CardActions>
-        <Button component="a" href={blog.url} target="_blank" rel="noopener noreferrer">Read the blog</Button>
+        <Button component="a" href={blog.url ? blog.url.includes('http') ? blog.url : `https://${blog.url}` : null} target="_blank" rel="noopener noreferrer">Read the blog</Button>
       </CardActions>
     </Card>
         <div>
